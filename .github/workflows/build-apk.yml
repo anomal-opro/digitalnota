@@ -26,11 +26,10 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Accept Android Licenses
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+      - name: Setup Android SDK (compileSdk 36)
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-36" "build-tools;36.0.0" || true
 
       - name: Install Dependencies
         run: npm install
@@ -45,13 +44,13 @@ jobs:
         run: chmod +x android/gradlew
 
       - name: Build Android APK
-        run: |
-          cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Xmx2g"
 
       - name: Prepare APK Output
-        run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk NotaDigital-v1.0.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk NotaDigital-v1.0.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
