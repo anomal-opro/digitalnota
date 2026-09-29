@@ -1,0 +1,288 @@
+/* ============================================================
+   RECEIPT CANVAS - PADANG NOTA DESIGN
+   Color Theme: #741D13
+   Matching the physical printed slip 100%
+   ============================================================ */
+
+.receipt-canvas {
+  width: 800px;
+  min-height: 1180px;
+  background-color: #ffffff;
+  color: #741D13;
+  padding: 32px 36px 40px 36px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 0 auto;
+}
+
+/* Perforated paper top edge styling */
+.receipt-perforation {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 16px;
+}
+
+.perforation-dash {
+  width: 8px;
+  height: 2px;
+  background-color: #741D13;
+  opacity: 0.4;
+}
+
+/* Top Section: Logo (Left) and Customer Info (Right) */
+.receipt-top-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 24px;
+}
+
+.receipt-logo-box {
+  width: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 4px;
+}
+
+.receipt-logo-img {
+  width: 100%;
+  max-width: 240px;
+  max-height: 120px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Right Info Rows with Dotted Lines */
+.receipt-info-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 10px;
+}
+
+.info-line-dotted {
+  display: flex;
+  align-items: baseline;
+  font-size: 15px;
+  font-weight: 700;
+  color: #741D13;
+  text-transform: uppercase;
+}
+
+.info-label {
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+  min-width: 85px;
+}
+
+.info-colon {
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.info-dotted-content {
+  flex: 1;
+  font-weight: 700;
+  color: #741D13;
+  border-bottom: 1.5px dotted #741D13;
+  padding-left: 6px;
+  padding-bottom: 2px;
+  min-height: 20px;
+  letter-spacing: 0.2px;
+}
+
+/* Table Area */
+.receipt-table-wrapper {
+  width: 100%;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.receipt-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Table Header Pill Banner in #741D13 */
+.receipt-table thead tr {
+  background-color: #741D13;
+  color: #ffffff;
+}
+
+.receipt-table thead th:first-child {
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
+.receipt-table thead th:last-child {
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+.receipt-table th {
+  padding: 12px 10px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-align: center;
+  border: none;
+}
+
+.receipt-table th.col-menu {
+  text-align: left;
+  padding-left: 18px;
+  width: 44%;
+}
+
+.receipt-table th.col-qty {
+  width: 13%;
+}
+
+.receipt-table th.col-harga {
+  text-align: right;
+  padding-right: 14px;
+  width: 21%;
+}
+
+.receipt-table th.col-jumlah {
+  text-align: right;
+  padding-right: 18px;
+  width: 22%;
+}
+
+/* Table Body Grid */
+.receipt-table tbody tr {
+  height: 38px;
+}
+
+.receipt-table tbody td {
+  border: 1.5px solid #741D13;
+  padding: 8px 12px;
+  font-size: 15px;
+  color: #741D13;
+  box-sizing: border-box;
+}
+
+.receipt-table tbody td.col-menu {
+  font-weight: 600;
+  text-align: left;
+  padding-left: 16px;
+}
+
+.receipt-table tbody td.col-qty {
+  text-align: center;
+  font-weight: 700;
+}
+
+.receipt-table tbody td.col-harga {
+  text-align: right;
+  padding-right: 14px;
+  font-weight: 600;
+}
+
+.receipt-table tbody td.col-jumlah {
+  text-align: right;
+  padding-right: 16px;
+  font-weight: 700;
+}
+
+/* Table Total Row */
+.receipt-table tfoot .total-row {
+  border-top: 2.5px solid #741D13;
+}
+
+.receipt-table tfoot td {
+  border: 1.5px solid #741D13;
+  padding: 10px 14px;
+  box-sizing: border-box;
+}
+
+.receipt-table tfoot .total-label {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-align: center;
+  color: #741D13;
+}
+
+.receipt-table tfoot .total-amount {
+  font-size: 19px;
+  font-weight: 900;
+  text-align: right;
+  padding-right: 16px;
+  color: #741D13;
+}
+
+/* Bottom Section: 2 Columns (NOTE box on Left, Terima Kasih on Right) */
+.receipt-bottom-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 24px;
+  margin-top: 14px;
+  min-height: 90px;
+}
+
+/* Left: NOTE Box */
+.receipt-note-box {
+  flex: 1.2;
+  border: 1.5px solid #741D13;
+  border-radius: 4px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.note-box-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  color: #741D13;
+}
+
+.note-box-text {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #741D13;
+  word-break: break-word;
+}
+
+/* Right: Terima Kasih Column (Replacing Hormat Kami) */
+.receipt-thanks-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8px 12px;
+}
+
+.thanks-script-text {
+  font-family: 'Brush Script MT', 'Segoe Script', 'Caveat', cursive, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #741D13;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.thanks-subtext {
+  font-size: 12px;
+  font-weight: 600;
+  color: #741D13;
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+}

@@ -1,0 +1,18 @@
+{
+  "short_name": "Nota Digital",
+  "name": "Nota Digital - Pembuat Nota Offline",
+  "description": "Aplikasi Pembuat Nota Digital Full Offline untuk Android",
+  "icons": [
+    {
+      "src": "/assets/default-header.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "display": "standalone",
+  "orientation": "portrait"
+}

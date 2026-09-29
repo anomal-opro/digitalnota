@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+  <defs>
+    <style>
+      .brand-title { font-family: 'Times New Roman', 'Georgia', serif; font-size: 52px; font-weight: 900; fill: #D32F2F; letter-spacing: 2px; }
+      .brand-phone { font-family: 'Arial Black', 'Impact', sans-serif; font-size: 38px; font-weight: 900; fill: #D32F2F; letter-spacing: 1px; }
+      .roof-path { fill: none; stroke: #D32F2F; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+      .roof-fill { fill: #D32F2F; }
+      .detail-stroke { stroke: #D32F2F; stroke-width: 4; fill: none; stroke-linecap: round; }
+    </style>
+  </defs>
+
+  <!-- Background clean white -->
+  <rect width="800" height="200" fill="#FFFFFF"/>
+
+  <!-- Left: Rumah Gadang Icon -->
+  <g transform="translate(30, 20)">
+    <!-- Decorative swirls on side -->
+    <path d="M 20 85 C 5 80, 5 60, 25 60 C 40 60, 35 75, 25 80" class="detail-stroke" />
+    <path d="M 230 85 C 245 80, 245 60, 225 60 C 210 60, 215 75, 225 80" class="detail-stroke" />
+
+    <!-- Main 5 Gonjong Roofs -->
+    <!-- Gonjong 1 (Leftmost small) -->
+    <path d="M 35 90 Q 55 45 48 30 Q 62 55 75 90 Z" class="roof-fill" />
+    
+    <!-- Gonjong 2 (Left medium) -->
+    <path d="M 65 90 Q 95 30 88 12 Q 105 45 115 90 Z" class="roof-fill" />
+
+    <!-- Gonjong 3 (Center highest peak) -->
+    <path d="M 105 90 Q 128 15 125 0 Q 138 25 145 90 Z" class="roof-fill" />
+
+    <!-- Gonjong 4 (Right medium) -->
+    <path d="M 135 90 Q 155 45 162 12 Q 155 30 185 90 Z" class="roof-fill" />
+
+    <!-- Gonjong 5 (Rightmost small) -->
+    <path d="M 175 90 Q 188 55 202 30 Q 195 45 215 90 Z" class="roof-fill" />
+
+    <!-- House Body / Posts -->
+    <rect x="45" y="90" width="160" height="42" fill="none" stroke="#D32F2F" stroke-width="5" rx="3" />
+    
+    <!-- Windows & Wooden Stilt Details -->
+    <line x1="75" y1="90" x2="75" y2="132" stroke="#D32F2F" stroke-width="4" />
+    <line x1="105" y1="90" x2="105" y2="132" stroke="#D32F2F" stroke-width="4" />
+    <line x1="145" y1="90" x2="145" y2="132" stroke="#D32F2F" stroke-width="4" />
+    <line x1="175" y1="90" x2="175" y2="132" stroke="#D32F2F" stroke-width="4" />
+
+    <line x1="45" y1="110" x2="205" y2="110" stroke="#D32F2F" stroke-width="3" />
+
+    <!-- Foundation stilts -->
+    <line x1="55" y1="132" x2="55" y2="148" stroke="#D32F2F" stroke-width="5" stroke-linecap="round" />
+    <line x1="90" y1="132" x2="90" y2="148" stroke="#D32F2F" stroke-width="5" stroke-linecap="round" />
+    <line x1="125" y1="132" x2="125" y2="148" stroke="#D32F2F" stroke-width="5" stroke-linecap="round" />
+    <line x1="160" y1="132" x2="160" y2="148" stroke="#D32F2F" stroke-width="5" stroke-linecap="round" />
+    <line x1="195" y1="132" x2="195" y2="148" stroke="#D32F2F" stroke-width="5" stroke-linecap="round" />
+    
+    <!-- Ground line -->
+    <line x1="30" y1="148" x2="220" y2="148" stroke="#D32F2F" stroke-width="4" stroke-linecap="round" />
+  </g>
+
+  <!-- Right: Title & Phone Number -->
+  <g transform="translate(300, 30)">
+    <text x="240" y="55" text-anchor="middle" class="brand-title">MUTIARA MINANG</text>
+    <text x="240" y="115" text-anchor="middle" class="brand-phone">HP. 0821 7061 1456</text>
+  </g>
+</svg>

@@ -1,0 +1,238 @@
+/* ============================================================
+   NOTA DETAIL PAGE & RECEIPT VIEWER STYLES
+   ============================================================ */
+
+.detail-page-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-bottom: 90px; /* Space for action bar */
+  background-color: #334155; /* Neutral contrast backdrop for receipt preview */
+}
+
+.detail-topbar {
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.detail-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detail-actions-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Receipt Viewport on Mobile */
+.receipt-viewport-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px;
+  overflow-x: auto;
+  min-height: 80vh;
+}
+
+/* Responsive scale container for the 800px wide receipt */
+.receipt-scaler {
+  width: 100%;
+  max-width: 800px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-sm);
+  background-color: #ffffff;
+}
+
+/* Hidden export container rendered at native 800px offscreen or for capture */
+.export-offscreen-container {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 800px;
+  visibility: visible; /* Must be visible to be captured by html-to-image */
+}
+
+/* Sticky Bottom Action Bar */
+.detail-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-light);
+  padding: 12px 16px calc(12px + var(--safe-bottom)) 16px;
+  display: flex;
+  gap: 10px;
+  z-index: 40;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.btn-download-main {
+  flex: 1.3;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+}
+
+.btn-edit-main {
+  flex: 1;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border: 1.5px solid var(--primary-border);
+  font-weight: 700;
+}
+
+/* Modal Overlay & Card */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end; /* Slide up bottom sheet on mobile */
+  justify-content: center;
+  z-index: 100;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--bg-surface);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  padding: 24px 20px calc(24px + var(--safe-bottom)) 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.export-option-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 14px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-light);
+  background-color: var(--bg-subtle);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.export-option-btn:hover {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.export-option-btn:active {
+  transform: scale(0.97);
+}
+
+.export-btn-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdf-icon-bg {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.png-icon-bg {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.export-btn-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.export-btn-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.folder-info-card {
+  background-color: #f8fafc;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.folder-path-code {
+  font-family: monospace;
+  font-size: 11px;
+  background-color: #e2e8f0;
+  color: #1e293b;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
