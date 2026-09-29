@@ -48,7 +48,14 @@ jobs:
 
       - name: Build Android APK
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        run: |
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee ../build.log || {
+            echo "::error::Gradle build failed!"
+            echo "========== ERROR SUMMARY =========="
+            grep -i -C 2 -E "(error:|fatal:|cannot find symbol|cannot override|weaker access|FAILURE:)" ../build.log | head -n 60 || tail -n 60 ../build.log
+            echo "===================================="
+            exit 1
+          }
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Xmx2g"
 

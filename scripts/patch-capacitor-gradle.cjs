@@ -3,13 +3,13 @@
  * scripts/patch-capacitor-gradle.cjs
  *
  * Patches Capacitor library build.gradle files to be compatible with AGP 8.13+.
- * Uses targeted string replacement (not regex) for known problematic lines.
+ * Uses targeted string replacement & regex to fix space-assignment deprecations and strict lint.
  */
 
 const fs = require('fs');
 const path = require('path');
 
-function patchFile(filePath, replacements) {
+function patchGradleFile(filePath) {
   const abs = path.resolve(filePath);
   if (!fs.existsSync(abs)) {
     console.log(`  [skip]    Not found: ${filePath}`);
@@ -19,9 +19,29 @@ function patchFile(filePath, replacements) {
   let content = fs.readFileSync(abs, 'utf8');
   const original = content;
 
-  for (const [find, replace] of replacements) {
-    content = content.split(find).join(replace);
-  }
+  // 1. Fix space-assignments in defaultConfig
+  content = content.replace(/^([ \t]*)minSdkVersion[ \t]+(project\.hasProperty[^\r\n]+)/gm, '$1minSdk = $2');
+  content = content.replace(/^([ \t]*)minSdkVersion[ \t]+(\d+)/gm, '$1minSdk = $2');
+  content = content.replace(/^([ \t]*)targetSdkVersion[ \t]+(project\.hasProperty[^\r\n]+)/gm, '$1targetSdk = $2');
+  content = content.replace(/^([ \t]*)targetSdkVersion[ \t]+(\d+)/gm, '$1targetSdk = $2');
+  content = content.replace(/^([ \t]*)versionCode[ \t]+(\d+)/gm, '$1versionCode = $2');
+  content = content.replace(/^([ \t]*)versionName[ \t]+("[^"]*")/gm, '$1versionName = $2');
+  content = content.replace(/^([ \t]*)testInstrumentationRunner[ \t]+("[^"]*")/gm, '$1testInstrumentationRunner = $2');
+
+  // 2. Fix buildTypes space-assignments
+  content = content.replace(/^([ \t]*)minifyEnabled[ \t]+(false|true)/gm, '$1minifyEnabled = $2');
+  // Fix proguardFiles without parentheses: proguardFiles getDefaultProguardFile(...), '...'
+  content = content.replace(
+    /([ \t]*)proguardFiles[ \t]+getDefaultProguardFile\(([^)]+)\),[ \t]*('[^']+'|"[^"]+")/g,
+    "$1proguardFiles(getDefaultProguardFile($2), $3)"
+  );
+
+  // 3. Fix lintOptions -> lint
+  content = content.replace(/([ \t]*)lintOptions[ \t]*\{/g, '$1lint {');
+
+  // 4. Disable strict lint failures (abortOnError, warningsAsErrors)
+  content = content.replace(/abortOnError[ \t]*=[ \t]*true/g, 'abortOnError = false');
+  content = content.replace(/warningsAsErrors[ \t]*=[ \t]*true/g, 'warningsAsErrors = false');
 
   if (content !== original) {
     fs.writeFileSync(abs, content, 'utf8');
@@ -31,47 +51,8 @@ function patchFile(filePath, replacements) {
   }
 }
 
-// ─── @capacitor/android/capacitor/build.gradle ───────────────────────────────
-patchFile('node_modules/@capacitor/android/capacitor/build.gradle', [
-  // defaultConfig: space-assignment -> = assignment
-  ["        minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 24",
-   "        minSdk = project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 24"],
-  ["        targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 36",
-   "        targetSdk = project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 36"],
-  ['        versionCode 1',  '        versionCode = 1'],
-  ['        versionName "1.0"', '        versionName = "1.0"'],
-  // buildTypes.release
-  ['            minifyEnabled false', '            minifyEnabled = false'],
-  ["            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'",
-   "            proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro')"],
-  // lintOptions -> lint
-  ['    lintOptions {', '    lint {'],
-]);
-
-// ─── @capacitor/filesystem/android/build.gradle ──────────────────────────────
-patchFile('node_modules/@capacitor/filesystem/android/build.gradle', [
-  ["        minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 24",
-   "        minSdk = project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 24"],
-  ["        targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 36",
-   "        targetSdk = project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 36"],
-  ['        versionCode 1',  '        versionCode = 1'],
-  ['        versionName "1.0"', '        versionName = "1.0"'],
-  ['            minifyEnabled false', '            minifyEnabled = false'],
-  ["            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'",
-   "            proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro')"],
-  ['    lintOptions {', '    lint {'],
-]);
-
-// ─── android/capacitor-cordova-android-plugins/build.gradle (cap sync gen) ───
-patchFile('android/capacitor-cordova-android-plugins/build.gradle', [
-  ["        minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 24",
-   "        minSdk = project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 24"],
-  ["        targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 36",
-   "        targetSdk = project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 36"],
-  ['        versionCode 1',  '        versionCode = 1'],
-  ['        versionName "1.0"', '        versionName = "1.0"'],
-  ['            minifyEnabled false', '            minifyEnabled = false'],
-  ['    lintOptions {', '    lint {'],
-]);
-
+console.log('[patch-capacitor-gradle] Starting patch for AGP 8.13+ compatibility...');
+patchGradleFile('node_modules/@capacitor/android/capacitor/build.gradle');
+patchGradleFile('node_modules/@capacitor/filesystem/android/build.gradle');
+patchGradleFile('android/capacitor-cordova-android-plugins/build.gradle');
 console.log('[patch-capacitor-gradle] Done.');

@@ -290,6 +290,7 @@ export const NotaFormPage: React.FC<NotaFormPageProps> = ({
                     placeholder="Nama Makanan / Minuman..."
                     value={item.menu}
                     onChange={(e) => handleItemChange(index, 'menu', e.target.value)}
+                    style={{ color: '#000000' }}
                   />
                   <button
                     type="button"
@@ -311,6 +312,7 @@ export const NotaFormPage: React.FC<NotaFormPageProps> = ({
                       inputMode="numeric"
                       min={0}
                       className="number-input text-right"
+                      style={{ color: '#000000' }}
                       value={item.qty === 0 ? '' : item.qty}
                       onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
                       placeholder="1"
@@ -323,6 +325,7 @@ export const NotaFormPage: React.FC<NotaFormPageProps> = ({
                       type="text"
                       inputMode="numeric"
                       className="number-input text-right"
+                      style={{ color: '#000000' }}
                       value={item.harga === 0 ? '' : formatNumberOnly(item.harga)}
                       onChange={(e) => handleItemChange(index, 'harga', e.target.value)}
                       placeholder="0"
@@ -373,7 +376,7 @@ export const NotaFormPage: React.FC<NotaFormPageProps> = ({
             <textarea
               className="form-input"
               rows={2}
-              placeholder="Contoh: Bungkus terpisah, kuah gulai dibanyakin..."
+              placeholder="..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
               style={{ resize: 'vertical' }}
