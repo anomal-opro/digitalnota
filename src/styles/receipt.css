@@ -102,7 +102,7 @@
 /* Table Area */
 .receipt-table-wrapper {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   flex: 1;
 }
 
@@ -228,7 +228,7 @@
   justify-content: space-between;
   align-items: stretch;
   gap: 24px;
-  margin-top: 14px;
+  margin-top: 6px;
   min-height: 90px;
 }
 

@@ -11,11 +11,12 @@ interface NotaReceiptProps {
 
 export const NotaReceipt = forwardRef<HTMLDivElement, NotaReceiptProps>(
   ({ nota, fillEmptyRows = true }, ref) => {
-    // Replicate paper pad rows (14 rows standard)
-    const minRows = 14;
+    // Smart row logic: always add exactly 2 blank "space" rows after real items
+    // so there's always breathing room below the last item before the total row.
+    // Minimum of 3 rows (1 data + 2 space) always shown.
     const items = nota.items || [];
-    const emptyRowCount = fillEmptyRows && items.length < minRows ? minRows - items.length : 0;
-    const emptyRows = Array.from({ length: emptyRowCount });
+    const extraRows = fillEmptyRows ? 2 : 0;
+    const emptyRows = Array.from({ length: extraRows });
 
     return (
       <div className="receipt-canvas" ref={ref} id={`receipt-canvas-${nota.id}`}>

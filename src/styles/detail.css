@@ -34,26 +34,29 @@
   gap: 8px;
 }
 
-/* Receipt Viewport on Mobile */
+/* Receipt Viewport on Mobile — horizontally scrollable */
 .receipt-viewport-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start; /* Allow scroll from left edge */
   padding: 16px 8px;
   overflow-x: auto;
+  overflow-y: visible;
   min-height: 80vh;
+  /* Smooth momentum scrolling on iOS/Android */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
-/* Responsive scale container for the 800px wide receipt */
+/* Container holds the full 800px receipt without clipping */
 .receipt-scaler {
-  width: 100%;
-  max-width: 800px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
+  width: 800px;
+  flex-shrink: 0;
+  display: block;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   border-radius: var(--radius-sm);
   background-color: #ffffff;
+  margin: 0 auto;
 }
 
 /* Hidden export container rendered at native 800px offscreen or for capture */
@@ -235,4 +238,39 @@
   color: #1e293b;
   padding: 3px 6px;
   border-radius: 4px;
+}
+
+/* Export status panels (processing / success / error) */
+.export-status-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 28px 16px 16px;
+  text-align: center;
+  min-height: 200px;
+}
+
+.export-success-icon {
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.export-status-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text-main);
+  letter-spacing: 0.2px;
+}
+
+.export-status-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 280px;
 }

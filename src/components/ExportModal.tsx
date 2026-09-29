@@ -5,16 +5,12 @@ import { generatePngBlob } from '../services/pngGenerator';
 import {
   saveExportedFile,
   generateExportFileName,
-  shareExportedFile,
-  type SaveFileResult,
 } from '../services/fileStorage';
 import {
   X,
   FileText,
   Image as ImageIcon,
   CheckCircle,
-  Share2,
-  Folder,
   Loader2,
   AlertTriangle,
 } from 'lucide-react';
@@ -25,26 +21,27 @@ interface ExportModalProps {
   onClose: () => void;
 }
 
+type ExportState = 'idle' | 'processing' | 'success' | 'error';
+
 export const ExportModal: React.FC<ExportModalProps> = ({
   nota,
   receiptElementRef,
   onClose,
 }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [processType, setProcessType] = useState<'pdf' | 'png' | null>(null);
-  const [lastResult, setLastResult] = useState<SaveFileResult | null>(null);
+  const [exportState, setExportState] = useState<ExportState>('idle');
+  const [activeType, setActiveType] = useState<'pdf' | 'png' | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleExport = async (type: 'pdf' | 'png') => {
     if (!receiptElementRef.current) {
-      setErrorMsg('Komponen nota belum siap untuk diexport.');
+      setErrorMsg('Komponen nota belum siap, coba lagi.');
+      setExportState('error');
       return;
     }
 
-    setIsProcessing(true);
-    setProcessType(type);
+    setActiveType(type);
+    setExportState('processing');
     setErrorMsg(null);
-    setLastResult(null);
 
     try {
       const fileName = generateExportFileName(
@@ -64,163 +61,156 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       }
 
       const saveResult = await saveExportedFile(blob, fileName, subFolder);
-      setLastResult(saveResult);
 
-      if (!saveResult.success && saveResult.error) {
-        setErrorMsg(saveResult.error);
+      if (saveResult.success) {
+        setExportState('success');
+      } else {
+        setErrorMsg(saveResult.error || 'Gagal menyimpan file.');
+        setExportState('error');
       }
     } catch (err: any) {
       console.error('Export error:', err);
-      setErrorMsg(err.message || 'Terjadi kesalahan saat memproses file');
-    } finally {
-      setIsProcessing(false);
+      setErrorMsg(err.message || 'Terjadi kesalahan saat memproses file.');
+      setExportState('error');
     }
   };
 
-  const handleShare = async () => {
-    if (!lastResult?.blob) return;
-    await shareExportedFile(
-      lastResult.blob,
-      lastResult.filePath,
-      `${nota.customer.toko || 'Nota'} - ${nota.notaNumber}`
-    );
+  const handleOk = () => {
+    onClose();
+  };
+
+  const handleRetry = () => {
+    setExportState('idle');
+    setActiveType(null);
+    setErrorMsg(null);
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={exportState === 'idle' ? onClose : undefined}>
       <div className="modal-content-card" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <div className="modal-title">
-            <Folder size={20} color="var(--primary)" />
-            <span>Download Nota Digital</span>
+
+        {/* ── IDLE: Choose format ── */}
+        {exportState === 'idle' && (
+          <>
+            <div className="modal-header">
+              <div className="modal-title">
+                <span>Download Nota</span>
+              </div>
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={onClose}
+                title="Tutup"
+                aria-label="Tutup"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="export-options-grid">
+              {/* PDF */}
+              <button
+                type="button"
+                className="export-option-btn"
+                onClick={() => handleExport('pdf')}
+                id="btn-export-pdf"
+              >
+                <div className="export-btn-icon pdf-icon-bg">
+                  <FileText size={24} />
+                </div>
+                <span className="export-btn-title">PDF</span>
+                <span className="export-btn-desc">Format Dokumen</span>
+              </button>
+
+              {/* PNG */}
+              <button
+                type="button"
+                className="export-option-btn"
+                onClick={() => handleExport('png')}
+                id="btn-export-png"
+              >
+                <div className="export-btn-icon png-icon-bg">
+                  <ImageIcon size={24} />
+                </div>
+                <span className="export-btn-title">PNG</span>
+                <span className="export-btn-desc">Format Gambar</span>
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* ── PROCESSING: Loading ── */}
+        {exportState === 'processing' && (
+          <div className="export-status-box">
+            <Loader2 size={44} className="animate-spin" color="#741D13" />
+            <span className="export-status-title">Memproses...</span>
+            <span className="export-status-sub">
+              Sedang membuat file {activeType?.toUpperCase()}, mohon tunggu sebentar.
+            </span>
           </div>
-          <button
-            type="button"
-            className="icon-btn"
-            onClick={onClose}
-            title="Tutup"
-            aria-label="Tutup"
-          >
-            <X size={20} />
-          </button>
-        </div>
+        )}
 
-        {/* Export Buttons */}
-        <div className="export-options-grid">
-          {/* Option 1: PDF */}
-          <button
-            type="button"
-            className="export-option-btn"
-            onClick={() => handleExport('pdf')}
-            disabled={isProcessing}
-            id="btn-export-pdf"
-          >
-            <div className="export-btn-icon pdf-icon-bg">
-              {isProcessing && processType === 'pdf' ? (
-                <Loader2 size={24} className="animate-spin" />
-              ) : (
-                <FileText size={24} />
-              )}
+        {/* ── SUCCESS: Download Sukses ── */}
+        {exportState === 'success' && (
+          <div className="export-status-box">
+            <div className="export-success-icon">
+              <CheckCircle size={48} color="#741D13" />
             </div>
-            <span className="export-btn-title">Download PDF</span>
-            <span className="export-btn-desc">
-              Folder: <b>Nota_PDF</b>
+            <span className="export-status-title" style={{ color: '#741D13' }}>
+              Download Sukses!
             </span>
-          </button>
-
-          {/* Option 2: PNG */}
-          <button
-            type="button"
-            className="export-option-btn"
-            onClick={() => handleExport('png')}
-            disabled={isProcessing}
-            id="btn-export-png"
-          >
-            <div className="export-btn-icon png-icon-bg">
-              {isProcessing && processType === 'png' ? (
-                <Loader2 size={24} className="animate-spin" />
-              ) : (
-                <ImageIcon size={24} />
-              )}
-            </div>
-            <span className="export-btn-title">Download PNG</span>
-            <span className="export-btn-desc">
-              Folder: <b>Nota_PNG</b>
+            <span className="export-status-sub">
+              File {activeType?.toUpperCase()} berhasil disimpan ke folder Download.
             </span>
-          </button>
-        </div>
-
-        {/* Success Confirmation Alert */}
-        {lastResult && lastResult.success && (
-          <div
-            style={{
-              padding: '12px 14px',
-              backgroundColor: '#ecfdf5',
-              border: '1px solid #a7f3d0',
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#065f46', fontWeight: 700, fontSize: '14px' }}>
-              <CheckCircle size={18} />
-              <span>Berhasil Disimpan!</span>
-            </div>
-            <div style={{ fontSize: '12px', color: '#047857', wordBreak: 'break-all' }}>
-              File: <b>{lastResult.filePath}</b>
-            </div>
-            <div style={{ fontSize: '11px', color: '#065f46' }}>
-              Tersimpan di: <code className="folder-path-code">{lastResult.folderPath}</code>
-            </div>
-
-            {/* Share to WhatsApp / Android share sheet */}
             <button
               type="button"
-              className="btn btn-success"
-              style={{ padding: '8px 14px', fontSize: '13px', marginTop: '4px' }}
-              onClick={handleShare}
+              className="btn btn-primary export-ok-btn"
+              onClick={handleOk}
+              id="btn-export-ok"
+              style={{
+                background: 'linear-gradient(135deg, #741D13 0%, #5a160e 100%)',
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: '16px',
+                padding: '14px 0',
+                borderRadius: '14px',
+                width: '100%',
+                marginTop: '4px',
+              }}
             >
-              <Share2 size={16} />
-              <span>Kirim / Bagikan ke WhatsApp</span>
+              OK
             </button>
           </div>
         )}
 
-        {/* Error Alert */}
-        {errorMsg && (
-          <div
-            style={{
-              padding: '12px 14px',
-              backgroundColor: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: '12px',
-              color: '#991b1b',
-              fontSize: '13px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <AlertTriangle size={18} />
-            <span>{errorMsg}</span>
+        {/* ── ERROR ── */}
+        {exportState === 'error' && (
+          <div className="export-status-box">
+            <AlertTriangle size={44} color="#dc2626" />
+            <span className="export-status-title" style={{ color: '#dc2626' }}>
+              Gagal Download
+            </span>
+            <span className="export-status-sub">{errorMsg}</span>
+            <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+              <button
+                type="button"
+                className="btn"
+                onClick={handleRetry}
+                style={{ flex: 1, border: '1.5px solid var(--border-light)', background: 'var(--bg-subtle)' }}
+              >
+                Coba Lagi
+              </button>
+              <button
+                type="button"
+                className="btn"
+                onClick={onClose}
+                style={{ flex: 1, background: 'var(--primary)', color: '#fff' }}
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         )}
-
-        {/* Folder Destination Notice */}
-        <div className="folder-info-card">
-          <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>
-            📁 Struktur Lokasi Penyimpanan Android:
-          </div>
-          <div>
-            • PDF otomatis masuk ke:{' '}
-            <code className="folder-path-code">Download/NotaDigital/Nota_PDF/</code>
-          </div>
-          <div>
-            • PNG otomatis masuk ke:{' '}
-            <code className="folder-path-code">Download/NotaDigital/Nota_PNG/</code>
-          </div>
-        </div>
       </div>
     </div>
   );
