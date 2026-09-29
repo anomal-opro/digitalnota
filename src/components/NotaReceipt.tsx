@@ -134,8 +134,11 @@ export const NotaReceipt = forwardRef<HTMLDivElement, NotaReceiptProps>(
 
           {/* Right: Terima Kasih (Replacing Hormat Kami) */}
           <div className="receipt-thanks-col">
-            <span className="thanks-script-text">
-              Terima Kasih Kunjungan Anda
+            <span className="thanks-text">
+              Terima Kasih
+            </span>
+            <span className="thanks-slogan">
+              #LamakBana
             </span>
             <span className="thanks-subtext">
               ( {nota.notaNumber} )
